@@ -89,16 +89,12 @@ function renderMonth(arr) {
       result += "</tr>";
     }
   };
-  // arr[0] - add week days
-  renderWeek(arr[0]);
 
-  // add the rest of the weeks
-  renderWeek(arr[1]);
-  renderWeek(arr[2]);
-  renderWeek(arr[3]);
-  renderWeek(arr[4]);
-  renderWeek(arr[5]);
-  renderWeek(arr[6]);
+  for (week of arr) {
+    if (week) {
+      renderWeek(week)
+    }
+  }
 
   // add the end of the table
   result += "</table>";
