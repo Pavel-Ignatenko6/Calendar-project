@@ -1,17 +1,9 @@
 // Task : to come up with a fucntion that returns a nested array
 
 // getDay(): возвращает день недели (отсчет начинается с 0 - воскресенье, и последний день - 6 - суббота)
+////////////////////////////////////////////////
 
-// Example :
-//  [
-// ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-// ['', '', '', 1, 2, 3, 4],
-// [5, 6, 7, 8, 9, 10, 11],
-// [12, 13, 14, 15, 16, 17, 18],
-// [19, 20, 21, 22, 23, 24, 25],
-// [26, 27, 28, 29, '', '', '']
-// ]
-
+const container = document.querySelector(".month-container");
 
 function getMonth(year, month) {
   // variables
@@ -43,7 +35,6 @@ function getMonth(year, month) {
     }
     count++;
   }
-  console.log('date ' + date.getDate());
 
   // fill the array with the rest of the weeks v
 
@@ -70,7 +61,6 @@ function getMonth(year, month) {
         }
         days++;
       }
-      console.log("date " + date.getDate());
       // add week arrays to the result
       result.push(week);
     }
@@ -78,4 +68,44 @@ function getMonth(year, month) {
   return result;
 }
 
-console.log(getMonth(2024, 2));
+// add DOM to the container
+function renderMonth(arr) {
+  // add beginning of the table
+  let result = '<table class="month">';
+
+  const renderWeek = (week) => {
+    if (week.some((day) => typeof day === "number")) {
+      result += "<tr>";
+      week.forEach((item) => {
+        result += `<td>${item}<td>`;
+      });
+      result += "</tr>";
+    }
+    if (week.some((day) => typeof day === "string" && day.length > 0)) {
+      result += "<tr>";
+      week.forEach((item) => {
+        result += `<th>${item}<th>`;
+      });
+      result += "</tr>";
+    }
+  };
+  // arr[0] - add week days
+  renderWeek(arr[0]);
+
+  // add the rest of the weeks
+  renderWeek(arr[1]);
+  renderWeek(arr[2]);
+  renderWeek(arr[3]);
+  renderWeek(arr[4]);
+  renderWeek(arr[5]);
+  renderWeek(arr[6]);
+
+  // add the end of the table
+  result += "</table>";
+
+  container.innerHTML = result;
+}
+
+addEventListener("DOMContentLoaded", () => {
+  renderMonth(getMonth(2024, 3))
+});
