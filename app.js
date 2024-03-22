@@ -70,38 +70,39 @@ function getMonth(year, month) {
 
 // add DOM to the container
 function renderMonth(arr) {
-  // add beginning of the table
+  // add a starting tag of the table
   let result = '<table class="month">';
 
+  // iterate over each inner array and wrap elements in <td> and <th>
   const renderWeek = (week) => {
-    if (week.some((day) => typeof day === "number")) {
-      result += "<tr>";
+    if (week.every((day) => typeof day === "string")) {
       week.forEach((item) => {
-        result += `<td>${item}<td>`;
+        result += `<th class="cell day-names">${item}</th>`;
       });
-      result += "</tr>";
-    }
-    if (week.some((day) => typeof day === "string" && day.length > 0)) {
-      result += "<tr>";
+    } else {
       week.forEach((item) => {
-        result += `<th>${item}<th>`;
+        result += `<td class="cell date">${item}</td>`;
       });
-      result += "</tr>";
     }
   };
 
-  for (week of arr) {
+  // check if inner array exists, pass it in renderWeek function and wrap the result in <tr>
+  for (let week of arr) {
     if (week) {
-      renderWeek(week)
+      result += `<tr class="row">`;
+      renderWeek(week);
+      result += `</tr>`;
     }
   }
 
-  // add the end of the table
-  result += "</table>";
-
+  // add a closing tag of the table
+  result += `</table>`;
+  
+  // pass the result into container's innerHTML
   container.innerHTML = result;
 }
 
+// when document loads, execute renderMonth
 addEventListener("DOMContentLoaded", () => {
-  renderMonth(getMonth(2024, 3))
+  renderMonth(getMonth(2024, 3));
 });
