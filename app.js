@@ -4,6 +4,7 @@
 ////////////////////////////////////////////////
 
 const container = document.querySelector(".month-container");
+const now = new Date();
 
 function getMonth(year, month) {
   // variables
@@ -12,7 +13,7 @@ function getMonth(year, month) {
   let firstWeek = [];
 
   //  get dates from Date object
-  let date = new Date(year, month - 1);
+  let date = new Date(year, month);
   const currentMonth = date.getMonth();
   const weekDay = date.getDay();
 
@@ -68,10 +69,35 @@ function getMonth(year, month) {
   return result;
 }
 
+// buttons variables
+const nextBtn = document.querySelector(".fa-angles-right");
+const prevBtn = document.querySelector(".fa-angles-left");
+// current date variables
+let presentMonth = now.getMonth();
+let presentYear = now.getFullYear();
+
+const monthsArr = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const monthName = document.querySelector(".month-name");
+
 // add DOM to the container
 function renderMonth(arr) {
   // add a starting tag of the table
-  let result = '<table class="month">';
+  let result = `<h2 class="month-name" data-month="${presentMonth}" data-year="${presentYear}">
+  ${monthsArr[presentMonth]} ${presentYear}</h2>
+  <table class="month">`;
 
   // iterate over each inner array and wrap elements in <td> and <th>
   const renderWeek = (week) => {
@@ -97,12 +123,39 @@ function renderMonth(arr) {
 
   // add a closing tag of the table
   result += `</table>`;
-  
+
   // pass the result into container's innerHTML
   container.innerHTML = result;
 }
 
+// event listeners
 // when document loads, execute renderMonth
 addEventListener("DOMContentLoaded", () => {
-  renderMonth(getMonth(2024, 3));
+  renderMonth(getMonth(presentYear, presentMonth));
+});
+
+// change month and year when buttons are clicked
+
+nextBtn.addEventListener("click", (e) => {
+  if (e) {
+    presentMonth++;
+    if (presentMonth > 11) {
+      presentYear++;
+      presentMonth = 0;
+    }
+  }
+
+  renderMonth(getMonth(presentYear, presentMonth));
+});
+
+prevBtn.addEventListener("click", (e) => {
+  if (e) {
+    presentMonth--;
+    if (presentMonth < 0) {
+      presentYear--;
+      presentMonth = 11;
+    }
+  }
+
+  renderMonth(getMonth(presentYear, presentMonth));
 });
