@@ -128,7 +128,19 @@ function renderMonth(arr) {
   container.innerHTML = result;
 }
 
+// modal variables
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".modal-overlay");
+const closeBtn = document.querySelector(".close-btn");
+let month = document.querySelector(".month-container");
+
+function showModal() {
+  modal.classList.toggle("hidden");
+  overlay.classList.toggle("hidden");
+}
+
 // event listeners
+
 // when document loads, execute renderMonth
 addEventListener("DOMContentLoaded", () => {
   renderMonth(getMonth(presentYear, presentMonth));
@@ -159,3 +171,18 @@ prevBtn.addEventListener("click", (e) => {
 
   renderMonth(getMonth(presentYear, presentMonth));
 });
+
+// open modal
+month.addEventListener("click", (e) => {
+  if (!e.target.closest("td")) {
+    return
+  }
+
+  if (e.target.innerText) {
+    showModal();
+  }
+});
+
+// close modal
+overlay.addEventListener("click", () => showModal());
+closeBtn.addEventListener("click", () => showModal());
