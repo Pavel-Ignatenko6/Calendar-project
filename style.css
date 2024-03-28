@@ -18,6 +18,12 @@ h1 {
   font-size: 4rem;
 }
 
+/***************************** 
+Main page 
+******************************/
+
+/* Table styles */
+
 .month-name {
   text-align: center;
   font-size: 3rem;
@@ -70,6 +76,69 @@ main {
   cursor: pointer;
 }
 
+/* end of table styles */
+
+/* modal styles */
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 25%;
+  width: 40%;
+  transform: translate(15%, -50%);
+  background: rgb(220, 227, 236);
+  min-height: 400px;
+  border: 2px solid yellow;
+  border-radius: 10px;
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.close-btn {
+  font-size: 5rem;
+  position: absolute;
+  right: 0.5rem;
+  top: 0.5rem;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-tasks {
+  display: block;
+  text-align: center;
+  color: black;
+  font-size: 2.5rem;
+  margin: 2rem 0;
+}
+
+.modal-tasks-display {
+  width: 70%;
+  min-height: 150px;
+  border: 1px solid black;
+  border-radius: 10px;
+  margin: 1rem auto;
+}
+
+.modal-add-btn {
+  display: block;
+  margin: 2rem auto;
+  padding: 1rem 3rem;
+  border-radius: 5px;
+  font-size: 2rem;
+}
+
+.hidden {
+  display: none;
+}
+
+/* emd of modal styles */
+
 .desc {
   width: 100%;
   height: 1500px;
@@ -77,7 +146,6 @@ main {
 }
 
 @media screen and (min-width: 2000px) {
-
   .month {
     height: 700px;
   }
