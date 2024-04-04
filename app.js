@@ -3,11 +3,48 @@
 // getDay(): возвращает день недели (отсчет начинается с 0 - воскресенье, и последний день - 6 - суббота)
 ////////////////////////////////////////////////
 
+// global variables
 const container = document.querySelector(".month-container");
 const now = new Date();
+let presentMonth = now.getMonth();
+let presentYear = now.getFullYear();
+
+const monthsArr = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const monthName = document.querySelector(".month-name");
+
+// button variables
+const nextBtn = document.querySelector(".fa-angles-right");
+const prevBtn = document.querySelector(".fa-angles-left");
+const closeBtn = document.querySelector(".close-btn");
+const addBtn = document.querySelector(".modal-add-btn");
+
+const modal = document.querySelector(".modal");
+const overlay = document.querySelector(".modal-overlay");
+
+// DOM variables
+const month = document.querySelector(".month-container");
+// make a variable to store data attribute in each cell
+let cellDate;
+let cellDOM;
+
+// add / delete task variables
+const taskField = document.querySelector(".modal-task-field");
+const tasksDisplay = document.querySelector(".modal-tasks-display");
 
 function getMonth(year, month) {
-  // variables
   let result = [];
   let dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   let firstWeek = [];
@@ -36,7 +73,6 @@ function getMonth(year, month) {
     }
     count++;
   }
-
   // fill the array with the rest of the weeks v
 
   // check if a day belongs to the current month
@@ -69,35 +105,14 @@ function getMonth(year, month) {
   return result;
 }
 
-// buttons variables
-const nextBtn = document.querySelector(".fa-angles-right");
-const prevBtn = document.querySelector(".fa-angles-left");
-// current date variables
-let presentMonth = now.getMonth();
-let presentYear = now.getFullYear();
-
-const monthsArr = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const monthName = document.querySelector(".month-name");
-
 // add DOM to the container
 function renderMonth(arr) {
+  // create counter for days in the date attribute
+  let counter = 1;
   // add a starting tag of the table
-  let result = `<h2 class="month-name" data-month="${presentMonth}" data-year="${presentYear}">
+  let result = `<h2 class="month-name">
   ${monthsArr[presentMonth]} ${presentYear}</h2>
-  <table class="month">`;
+  <table class="month" data-month="${presentMonth + 1}" data-year="${presentYear}">`;
 
   // iterate over each inner array and wrap elements in <td> and <th>
   const renderWeek = (week) => {
@@ -107,7 +122,16 @@ function renderMonth(arr) {
       });
     } else {
       week.forEach((item) => {
-        result += `<td class="cell date">${item}</td>`;
+        // check if there is a date in a cell
+        if (item) {
+          // if yes, set atrribute with the date
+          result += `<td class="cell date" data-current-date="${
+            presentMonth + 1
+          }.${counter++}.${presentYear}">${item}</td>`;
+        } else {
+          // otherwise no attribute
+          result += `<td class="cell">${item}</td>`;
+        }
       });
     }
   };
@@ -128,15 +152,53 @@ function renderMonth(arr) {
   container.innerHTML = result;
 }
 
-// modal variables
-const modal = document.querySelector(".modal");
-const overlay = document.querySelector(".modal-overlay");
-const closeBtn = document.querySelector(".close-btn");
-let month = document.querySelector(".month-container");
-
 function showModal() {
   modal.classList.toggle("hidden");
   overlay.classList.toggle("hidden");
+}
+// make array for storing local storage values
+let tasks = [];
+let parsedTasks;
+
+function updateLocalStorage() {
+  const keyDate = cellDate;
+      localStorage.setItem(keyDate, JSON.stringify(tasks));
+      parsedTasks = JSON.parse(localStorage.getItem(keyDate));
+}
+
+function updateTasks() {
+  tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
+  cellDOM.innerHTML += `<div class="cell-tasks"></div>`;
+  parsedTasks.forEach((task) => {
+    tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
+    console.log(cellDOM.innerHTML);
+    cellDOM.firstElementChild.innerHTML += `<p class="cell-single-task">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></p>`;
+  });
+}
+
+function addTask() {
+  try {
+    // const keyDate = cellDate;
+
+    if (taskField.value.length > 5) {
+      tasks.push(taskField.value);
+      updateLocalStorage()
+      updateTasks()
+    } else {
+      throw err
+    }
+
+    // for THE NEXT TIME ---> add task to a specific cell
+  } catch (err) {
+      alert("Please enter more than 5 characters");
+    
+  }
+}
+
+function deleteTask(event) {
+  if (event.target.closest("i")) {
+    event.target.parentElement.remove();
+  }
 }
 
 // event listeners
@@ -174,8 +236,13 @@ prevBtn.addEventListener("click", (e) => {
 
 // open modal
 month.addEventListener("click", (e) => {
+  // assign data attribute when we click on a cell
+  cellDate = e.target.dataset.currentDate;
+
+  cellDOM = e.target;
+
   if (!e.target.closest("td")) {
-    return
+    return;
   }
 
   if (e.target.innerText) {
@@ -184,5 +251,17 @@ month.addEventListener("click", (e) => {
 });
 
 // close modal
-overlay.addEventListener("click", () => showModal());
-closeBtn.addEventListener("click", () => showModal());
+overlay.addEventListener("click", showModal);
+closeBtn.addEventListener("click", showModal);
+
+// add / delete task
+
+addBtn.addEventListener("click", (e) => {
+  console.log(e.target);
+  addTask();
+});
+
+// to Fix ???????
+tasksDisplay.addEventListener("click", (e) => {
+  deleteTask(e);
+});
