@@ -168,17 +168,15 @@ function updateLocalStorage() {
 
 function updateTasks() {
   tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
-  cellDOM.innerHTML += `<div class="cell-tasks"></div>`;
+  cellDOM.innerHTML = `<div class="cell-tasks"></div>`;
   parsedTasks.forEach((task) => {
     tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
-    console.log(cellDOM.innerHTML);
     cellDOM.firstElementChild.innerHTML += `<p class="cell-single-task">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></p>`;
   });
 }
 
 function addTask() {
   try {
-    // const keyDate = cellDate;
 
     if (taskField.value.length > 5) {
       tasks.push(taskField.value);
@@ -237,9 +235,12 @@ prevBtn.addEventListener("click", (e) => {
 // open modal
 month.addEventListener("click", (e) => {
   // assign data attribute when we click on a cell
-  cellDate = e.target.dataset.currentDate;
+  
+  cellDOM = e.target.closest("td");
+  cellDate = cellDOM.dataset.currentDate;
 
-  cellDOM = e.target;
+  console.log(cellDOM);
+  console.log(cellDate);
 
   if (!e.target.closest("td")) {
     return;
@@ -256,8 +257,7 @@ closeBtn.addEventListener("click", showModal);
 
 // add / delete task
 
-addBtn.addEventListener("click", (e) => {
-  console.log(e.target);
+addBtn.addEventListener("click", () => {
   addTask();
 });
 
