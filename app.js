@@ -115,19 +115,17 @@ function renderMonth(arr) {
   <table class="month" data-month="${presentMonth + 1}" data-year="${presentYear}">`;
 
   // iterate over each inner array and wrap elements in <td> and <th>
-  const renderWeek = (week) => {
-    if (week.every((day) => typeof day === "string")) {
-      week.forEach((item) => {
+  const renderWeek = week => {
+    if (week.every(day => typeof day === "string")) {
+      week.forEach(item => {
         result += `<th class="cell day-names">${item}</th>`;
       });
     } else {
-      week.forEach((item) => {
+      week.forEach(item => {
         // check if there is a date in a cell
         if (item) {
           // if yes, set atrribute with the date
-          result += `<td class="cell date" data-current-date="${
-            presentMonth + 1
-          }.${counter++}.${presentYear}">${item}</td>`;
+          result += `<td class="cell date" data-current-date="${presentMonth + 1}.${counter++}.${presentYear}">${item}</td>`;
         } else {
           // otherwise no attribute
           result += `<td class="cell">${item}</td>`;
@@ -162,14 +160,21 @@ let parsedTasks;
 
 function updateLocalStorage() {
   const keyDate = cellDate;
-      localStorage.setItem(keyDate, JSON.stringify(tasks));
-      parsedTasks = JSON.parse(localStorage.getItem(keyDate));
+  if (!localStorage.getItem(keyDate)) {
+    tasks = []
+    tasks.push(taskField.value);
+    localStorage.setItem(keyDate, JSON.stringify(tasks));
+  } else {
+    tasks.push(taskField.value);
+    localStorage.setItem(keyDate, JSON.stringify(tasks));
+  }
+  parsedTasks = JSON.parse(localStorage.getItem(keyDate));
 }
 
 function updateTasks() {
-  tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
-  cellDOM.innerHTML = `<div class="cell-tasks"></div>`;
-  parsedTasks.forEach((task) => {
+  tasksDisplay.innerHTML = `<ul class="tasks-list" data-current-date="${cellDate}"></ul>`;
+  cellDOM.innerHTML = `<div class="cell-tasks" data-current-date="${cellDate}"></div>`;
+  parsedTasks.forEach(task => {
     tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
     cellDOM.firstElementChild.innerHTML += `<p class="cell-single-task">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></p>`;
   });
@@ -177,19 +182,15 @@ function updateTasks() {
 
 function addTask() {
   try {
-
     if (taskField.value.length > 5) {
-      tasks.push(taskField.value);
-      updateLocalStorage()
-      updateTasks()
+      updateLocalStorage();
+      updateTasks();
     } else {
-      throw err
+      throw err;
     }
-
-    // for THE NEXT TIME ---> add task to a specific cell
-  } catch (err) {
-      alert("Please enter more than 5 characters");
     
+  } catch (err) {
+    alert("Please enter more than 5 characters");
   }
 }
 
@@ -208,7 +209,7 @@ addEventListener("DOMContentLoaded", () => {
 
 // change month and year when buttons are clicked
 
-nextBtn.addEventListener("click", (e) => {
+nextBtn.addEventListener("click", e => {
   if (e) {
     presentMonth++;
     if (presentMonth > 11) {
@@ -220,7 +221,7 @@ nextBtn.addEventListener("click", (e) => {
   renderMonth(getMonth(presentYear, presentMonth));
 });
 
-prevBtn.addEventListener("click", (e) => {
+prevBtn.addEventListener("click", e => {
   if (e) {
     presentMonth--;
     if (presentMonth < 0) {
@@ -233,11 +234,18 @@ prevBtn.addEventListener("click", (e) => {
 });
 
 // open modal
-month.addEventListener("click", (e) => {
+month.addEventListener("click", e => {
   // assign data attribute when we click on a cell
-  
+
   cellDOM = e.target.closest("td");
   cellDate = cellDOM.dataset.currentDate;
+
+  // setAttribute to a task display to add specific tasks to a certain date
+  tasksDisplay.setAttribute("data-current-date", cellDate);
+
+  if (tasksDisplay.firstElementChild) {
+    tasksDisplay.firstElementChild.setAttribute("data-current-date", cellDate);
+  }
 
   console.log(cellDOM);
   console.log(cellDate);
@@ -262,6 +270,6 @@ addBtn.addEventListener("click", () => {
 });
 
 // to Fix ???????
-tasksDisplay.addEventListener("click", (e) => {
+tasksDisplay.addEventListener("click", e => {
   deleteTask(e);
 });
