@@ -153,44 +153,48 @@ function renderMonth(arr) {
 function showModal() {
   modal.classList.toggle("hidden");
   overlay.classList.toggle("hidden");
+  // delete tasks from modal when modal is closed
+  if (modal.classList.contains("hidden") && tasksDisplay.firstElementChild) {
+    tasksDisplay.firstElementChild.remove();
+  }
 }
 // make array for storing local storage values
 let tasks = [];
-let parsedTasks;
-
-function updateLocalStorage() {
-  const keyDate = cellDate;
-  if (!localStorage.getItem(keyDate)) {
-    tasks = []
-    tasks.push(taskField.value);
-    localStorage.setItem(keyDate, JSON.stringify(tasks));
-  } else {
-    tasks.push(taskField.value);
-    localStorage.setItem(keyDate, JSON.stringify(tasks));
-  }
-  parsedTasks = JSON.parse(localStorage.getItem(keyDate));
-}
-
-function updateTasks() {
-  tasksDisplay.innerHTML = `<ul class="tasks-list" data-current-date="${cellDate}"></ul>`;
-  cellDOM.innerHTML = `<div class="cell-tasks" data-current-date="${cellDate}"></div>`;
-  parsedTasks.forEach(task => {
-    tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
-    cellDOM.firstElementChild.innerHTML += `<p class="cell-single-task">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></p>`;
-  });
-}
 
 function addTask() {
   try {
-    if (taskField.value.length > 5) {
-      updateLocalStorage();
-      updateTasks();
-    } else {
-      throw err;
+    if (taskField.value.length < 5) {
+      alert("Please enter more than 5 characters.");
+      return;
     }
-    
+    // add task to a local storage
+      const keyDate = cellDate;
+
+      if (!localStorage.getItem(keyDate)) {
+        tasks = [];
+      }
+
+      if (localStorage.getItem(keyDate) === cellDate) {
+        JSON.parse(localStorage.getItem(keyDate).push(taskField.value));
+      }
+
+      tasks.push(taskField.value);
+      localStorage.setItem(keyDate, JSON.stringify(tasks));
+
+    // update tasks DOM
+    tasksDisplay.innerHTML = `<ul class="tasks-list" data-current-date="${cellDate}"></ul>`;
+    cellDOM.innerHTML = `<div class="cell-tasks" data-current-date="${cellDate}"></div>`;
+
+    for (let key in localStorage) {
+      if (key === cellDate) {
+        JSON.parse(localStorage.getItem(key)).forEach(task => {
+          tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
+          cellDOM.firstElementChild.innerHTML += `<p class="cell-single-task">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></p>`;
+        });
+      }
+    }
   } catch (err) {
-    alert("Please enter more than 5 characters");
+    alert("Error has occured! Cannot update tasks.");
   }
 }
 
@@ -236,26 +240,31 @@ prevBtn.addEventListener("click", e => {
 // open modal
 month.addEventListener("click", e => {
   // assign data attribute when we click on a cell
-
   cellDOM = e.target.closest("td");
   cellDate = cellDOM.dataset.currentDate;
 
   // setAttribute to a task display to add specific tasks to a certain date
   tasksDisplay.setAttribute("data-current-date", cellDate);
 
-  if (tasksDisplay.firstElementChild) {
-    tasksDisplay.firstElementChild.setAttribute("data-current-date", cellDate);
-  }
+  tasks = [];
 
-  console.log(cellDOM);
-  console.log(cellDate);
-
-  if (!e.target.closest("td")) {
+  if (!cellDOM) {
     return;
   }
 
-  if (e.target.innerText) {
+  if (cellDOM.innerText) {
     showModal();
+    // iterate over keys in local storage
+    for (let key in localStorage) {
+      // if key matches modal display attribute add tasks from local storage
+      if (key === tasksDisplay.dataset.currentDate) {
+        tasksDisplay.innerHTML = `<ul class="tasks-list" data-current-date="${key}"></ul>`;
+        tasks = JSON.parse(localStorage.getItem(key));
+        tasks.forEach(task => {
+          tasksDisplay.firstElementChild.innerHTML += `<li>${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
+        });
+      }
+    }
   }
 });
 
@@ -269,7 +278,7 @@ addBtn.addEventListener("click", () => {
   addTask();
 });
 
-// to Fix ???????
+
 tasksDisplay.addEventListener("click", e => {
   deleteTask(e);
 });
