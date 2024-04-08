@@ -207,7 +207,6 @@ function updateDOM() {
     let dateAtr = day.dataset.currentDate;
     for (let key of keys) {
       if (key === dateAtr) {
-        // console.log(dateAtr);
         day.innerHTML = `<div class="cell-tasks" data-current-date="${cellDate}"></div>`;
         JSON.parse(localStorage.getItem(key)).forEach(task => {
           day.innerHTML += `
@@ -232,28 +231,26 @@ addEventListener("DOMContentLoaded", () => {
 
 // change month and year when buttons are clicked
 
-nextBtn.addEventListener("click", e => {
-  if (e) {
-    presentMonth++;
-    if (presentMonth > 11) {
-      presentYear++;
-      presentMonth = 0;
-    }
+nextBtn.addEventListener("click", () => {
+  presentMonth++;
+  if (presentMonth > 11) {
+    presentYear++;
+    presentMonth = 0;
   }
-
   renderMonth(getMonth(presentYear, presentMonth));
+  cells = document.querySelectorAll(".date");
+  updateDOM();
 });
 
-prevBtn.addEventListener("click", e => {
-  if (e) {
-    presentMonth--;
-    if (presentMonth < 0) {
-      presentYear--;
-      presentMonth = 11;
-    }
+prevBtn.addEventListener("click", () => {
+  presentMonth--;
+  if (presentMonth < 0) {
+    presentYear--;
+    presentMonth = 11;
   }
-
   renderMonth(getMonth(presentYear, presentMonth));
+  cells = document.querySelectorAll(".date");
+  updateDOM();
 });
 
 // open modal
