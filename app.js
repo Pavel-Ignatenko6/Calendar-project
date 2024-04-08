@@ -1,8 +1,3 @@
-// Task : to come up with a fucntion that returns a nested array
-
-// getDay(): возвращает день недели (отсчет начинается с 0 - воскресенье, и последний день - 6 - суббота)
-////////////////////////////////////////////////
-
 // global variables
 const container = document.querySelector(".month-container");
 const now = new Date();
@@ -39,6 +34,8 @@ const month = document.querySelector(".month-container");
 // make a variable to store data attribute in each cell
 let cellDate;
 let cellDOM;
+// select all calendar days
+let cells;
 
 // add / delete task variables
 const taskField = document.querySelector(".modal-task-field");
@@ -168,18 +165,18 @@ function addTask() {
       return;
     }
     // add task to a local storage
-      const keyDate = cellDate;
+    const keyDate = cellDate;
 
-      if (!localStorage.getItem(keyDate)) {
-        tasks = [];
-      }
+    if (!localStorage.getItem(keyDate)) {
+      tasks = [];
+    }
 
-      if (localStorage.getItem(keyDate) === cellDate) {
-        JSON.parse(localStorage.getItem(keyDate).push(taskField.value));
-      }
+    if (localStorage.getItem(keyDate) === cellDate) {
+      JSON.parse(localStorage.getItem(keyDate).push(taskField.value));
+    }
 
-      tasks.push(taskField.value);
-      localStorage.setItem(keyDate, JSON.stringify(tasks));
+    tasks.push(taskField.value);
+    localStorage.setItem(keyDate, JSON.stringify(tasks));
 
     // update tasks DOM
     tasksDisplay.innerHTML = `<ul class="tasks-list" data-current-date="${cellDate}"></ul>`;
@@ -204,11 +201,33 @@ function deleteTask(event) {
   }
 }
 
+function updateDOM() {
+  let keys = Object.keys(localStorage);
+  for (let day of cells) {
+    let dateAtr = day.dataset.currentDate;
+    for (let key of keys) {
+      if (key === dateAtr) {
+        // console.log(dateAtr);
+        day.innerHTML = `<div class="cell-tasks" data-current-date="${cellDate}"></div>`;
+        JSON.parse(localStorage.getItem(key)).forEach(task => {
+          day.innerHTML += `
+        <p class="cell-single-task">${task}
+        <i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000" aria-hidden="true"></i></p>
+        `;
+        });
+      }
+    }
+  }
+}
+
 // event listeners
 
 // when document loads, execute renderMonth
 addEventListener("DOMContentLoaded", () => {
   renderMonth(getMonth(presentYear, presentMonth));
+  // select cells with a date and reassign it to global variable
+  cells = document.querySelectorAll(".date");
+  updateDOM();
 });
 
 // change month and year when buttons are clicked
@@ -273,11 +292,9 @@ overlay.addEventListener("click", showModal);
 closeBtn.addEventListener("click", showModal);
 
 // add / delete task
-
 addBtn.addEventListener("click", () => {
   addTask();
 });
-
 
 tasksDisplay.addEventListener("click", e => {
   deleteTask(e);
