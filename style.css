@@ -15,7 +15,7 @@ body {
 h1 {
   text-align: center;
   padding-top: 1rem;
-  font-size: 4rem;
+  font-size: 6rem;
 }
 
 /***************************** 
@@ -26,7 +26,7 @@ Main page
 
 .month-name {
   text-align: center;
-  font-size: 3rem;
+  font-size: 5rem;
   padding: 1.5rem;
 }
 
@@ -64,7 +64,19 @@ main {
 }
 
 .cell-single-task {
-  /* add styles for tasks in each cell */
+  font-size: 2rem;
+  position: relative;
+  text-align: left;
+  margin: 0 0 1rem 1.5rem;
+  list-style-type: none;
+}
+
+.cell-delete-btn {
+  margin: 0rem 1rem;
+  font-size: 2rem;
+  position: absolute;
+  right: 0;
+  cursor: pointer;
 }
 
 .day-names {
