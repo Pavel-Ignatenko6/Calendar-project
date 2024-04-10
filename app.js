@@ -177,6 +177,7 @@ function addTask() {
 
     tasks.push(taskField.value);
     localStorage.setItem(keyDate, JSON.stringify(tasks));
+    console.log(tasks);
 
     // update tasks DOM
     tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
@@ -217,27 +218,38 @@ function deleteTask(event) {
     console.log(storageTasks);
 
     storageTasks.forEach((task, i) => {
-      if (event.target.parentElement.dataset.id == i) {
+      if (taskElem.dataset.id == i) {
         storageTasks.splice(i, 1);
       }
     });
 
     console.log(storageTasks);
+    console.log(cellDOM);
+    console.log(tasksDisplay.firstElementChild);
+
 
     for (let key of keys) {
       if (key === modalAtr) {
         localStorage.setItem(key, JSON.stringify(storageTasks));
       }
     }
-    tasksDisplay.firstElementChild.innerHTML = ''
-    JSON.parse(localStorage.getItem(modalAtr)).forEach(task => {
-      tasksDisplay.firstElementChild.innerHTML += `<li data-id="${id}">${task}
-        <i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000" aria-hidden="true"></i></li>`;
-      id++;
+    if (tasksDisplay.firstElementChild) {
+      tasksDisplay.firstElementChild.innerHTML = "";
+      JSON.parse(localStorage.getItem(modalAtr)).forEach(task => {
+        tasksDisplay.firstElementChild.innerHTML += `<li data-id="${id}">${task}
+          <i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000" aria-hidden="true"></i></li>`;
+        id++;
+      });
+    }
+    cellDOM.firstElementChild.innerHTML = "";
+    JSON.parse(localStorage.getItem(cellDate)).forEach(task => {
+      cellDOM.firstElementChild.innerHTML += `<li class="cell-single-task" data-id="${id}">${task}
+        <i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000" aria-hidden="true"></i></li>`;
+        id++
     });
   }
-  // if (event.target.classList.contains("cell-delete-btn")) {
-  // }
+
+  tasks = JSON.parse(localStorage.getItem(modalAtr));
 }
 
 function updateDOM() {
