@@ -122,7 +122,7 @@ function renderMonth(arr) {
         // check if there is a date in a cell
         if (item) {
           // if yes, set atrribute with the date
-          result += `<td class="cell date" data-current-date="${presentMonth + 1}.${counter++}.${presentYear}">${item}</td>`;
+          result += `<td class="cell date" data-current-date="${presentMonth + 1}.${counter++}.${presentYear}">${item}<div></div></td>`;
         } else {
           // otherwise no attribute
           result += `<td class="cell">${item}</td>`;
@@ -177,11 +177,11 @@ function addTask() {
 
     tasks.push(taskField.value);
     localStorage.setItem(keyDate, JSON.stringify(tasks));
-    console.log(tasks);
+    console.log(cellDOM.lastElementChild);
 
-    // update tasks DOM
+    
+    cellDOM.lastElementChild.innerHTML = `<ul class="cell-tasks"></ul>`;
     tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
-    cellDOM.innerHTML = `<ul class="cell-tasks"></ul>`;
 
     // set counter for assgining id to each task
     let id = 0;
@@ -190,7 +190,7 @@ function addTask() {
       if (key === cellDate) {
         JSON.parse(localStorage.getItem(key)).forEach(task => {
           tasksDisplay.firstElementChild.innerHTML += `<li data-id="${id}">${task}<i class="fa-solid fa-square-xmark modal-delete-btn" style="color: #e00000"></i></li>`;
-          cellDOM.firstElementChild.innerHTML += `<li class="cell-single-task" data-id="${id}">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></li>`;
+          cellDOM.lastElementChild.firstElementChild.innerHTML += `<li class="cell-single-task" data-id="${id}">${task}<i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000"></i></li>`;
           id++;
         });
       }
@@ -205,28 +205,16 @@ function deleteTask(event) {
   let keys = Object.keys(localStorage);
   let modalAtr = tasksDisplay.dataset.currentDate;
   let id = 0;
-  // console.log(modalList);
-  // let cellAtr = month.firstElementChild.closest('td')
-  // console.log(cellAtr);
-
-  console.log(taskElem);
 
   // подумать как обновить array с тасками и добавить в local storage и обновить данные в ячейках
   if (taskElem) {
     const storageTasks = JSON.parse(localStorage.getItem(modalAtr));
-
-    console.log(storageTasks);
 
     storageTasks.forEach((task, i) => {
       if (taskElem.dataset.id == i) {
         storageTasks.splice(i, 1);
       }
     });
-
-    console.log(storageTasks);
-    console.log(cellDOM);
-    console.log(tasksDisplay.firstElementChild);
-
 
     for (let key of keys) {
       if (key === modalAtr) {
@@ -245,7 +233,7 @@ function deleteTask(event) {
     JSON.parse(localStorage.getItem(cellDate)).forEach(task => {
       cellDOM.firstElementChild.innerHTML += `<li class="cell-single-task" data-id="${id}">${task}
         <i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000" aria-hidden="true"></i></li>`;
-        id++
+      id++;
     });
   }
 
@@ -314,7 +302,6 @@ month.addEventListener("click", e => {
   // assign data attribute when we click on a cell
   cellDOM = e.target.closest("td");
   cellDate = cellDOM.dataset.currentDate;
-  cellDeleteBtn = cellDOM.firstElementChild;
 
   // tasks' id
   let id = 0;
