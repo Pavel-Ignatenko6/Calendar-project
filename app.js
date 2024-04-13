@@ -176,8 +176,8 @@ function addTask() {
     }
 
     tasks.push(taskField.value);
+    taskField.value = ""
     localStorage.setItem(keyDate, JSON.stringify(tasks));
-    console.log(cellDOM.lastElementChild);
 
     
     cellDOM.lastElementChild.innerHTML = `<ul class="cell-tasks"></ul>`;
@@ -206,7 +206,6 @@ function deleteTask(event) {
   let modalAtr = tasksDisplay.dataset.currentDate;
   let id = 0;
 
-  // подумать как обновить array с тасками и добавить в local storage и обновить данные в ячейках
   if (taskElem) {
     const storageTasks = JSON.parse(localStorage.getItem(modalAtr));
 
@@ -248,9 +247,9 @@ function updateDOM() {
     let dateAtr = day.dataset.currentDate;
     for (let key of keys) {
       if (key === dateAtr) {
-        day.innerHTML = `<ul class="cell-tasks"></ul>`;
+        day.lastElementChild.innerHTML = `<ul class="cell-tasks"></ul>`;
         JSON.parse(localStorage.getItem(key)).forEach(task => {
-          day.firstElementChild.innerHTML += `
+          day.lastElementChild.firstElementChild.innerHTML += `
         <li class="cell-single-task" data-id="${id}">${task}
         <i class="fa-solid fa-square-xmark cell-delete-btn" style="color: #e00000" aria-hidden="true"></i></li>
         `;
@@ -301,7 +300,9 @@ prevBtn.addEventListener("click", () => {
 month.addEventListener("click", e => {
   // assign data attribute when we click on a cell
   cellDOM = e.target.closest("td");
-  cellDate = cellDOM.dataset.currentDate;
+  if (cellDOM) {
+    cellDate = cellDOM.dataset.currentDate;
+  }
 
   // tasks' id
   let id = 0;
