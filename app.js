@@ -1,4 +1,49 @@
 // global variables
+
+const pageContent = document.querySelector(".page-content");
+let DOMcontent;
+
+const routes = {
+  home() {
+    location.reload()
+  },
+  about() {
+    pageContent.innerHTML = `
+    <div class="container">
+        <div class="flex-item about">
+          <h2 class="about-title">About me</h2>
+          <p class="about-text">
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Exercitationem maiores vero autem quibusdam ratione perspiciatis nulla! Sint corporis reiciendis iure nam. Ut nesciunt totam, distinctio omnis illo veritatis, suscipit voluptas esse voluptatibus natus, sed facilis aperiam! Aliquid ipsum accusantium vel assumenda voluptatibus deserunt iusto est magni ut autem doloremque tenetur magnam ex, velit modi neque quam minima! Dicta a quas at id quod iure repudiandae mollitia cupiditate quis! Vitae quisquam iure voluptas eligendi corrupti minus reiciendis hic quasi earum molestias at dolor inventore placeat, laboriosam recusandae suscipit assumenda, facere repellat tenetur corporis odit? Quo incidunt ratione excepturi maxime officia itaque aut molestias fuga mollitia expedita, nobis nemo libero labore iure neque quibusdam, atque, sequi consequatur sed nostrum odit saepe ab veritatis? Iusto impedit ducimus consequatur cupiditate recusandae harum numquam sint.
+          </p>
+        </div>
+        <div class="flex-item picture"><img src="/img/Me.jpg" alt="Dev's picture" class="img"></div>
+    </div>
+    `;
+  },
+  contacts() {
+    pageContent.innerHTML = `
+    <div class="form-container">
+        <div class="form-text-container">
+            <div class="form-text">
+                <h1 class="form-text-title">Contact our support team</h1>
+                <p class="form-text-paragraph">Fill out your information and we will reach out to you.</p>
+            </div>
+        </div>
+        <form class="form">
+            <div class="input-container">
+                <label for="name"><div class="input-name">First name</div><input type="text" name="name" class="single-input"></label>
+                <label for="surname"><div class="input-name">Last name</div><input type="text" name="surname" class="single-input"></label>
+                <label for="email"><div class="input-name">Email</div><input type="text" name="email" class="single-input"></label>
+                <label for="phone"><div class="input-name">Phone number</div><input type="text" name="phone" class="single-input"></label>
+                <label for="message"><div class="input-name">What would you like to discuss?</div> <textarea name="message" id="textarea" class="single-input" cols="30" rows="10"></textarea></label>
+            </div>
+            <button type="submit" class="form-btn">Submit</button>
+        </form>
+    </div>
+    `;
+  },
+};
+
 const container = document.querySelector(".month-container");
 const now = new Date();
 let presentMonth = now.getMonth();
@@ -176,10 +221,9 @@ function addTask() {
     }
 
     tasks.push(taskField.value);
-    taskField.value = ""
+    taskField.value = "";
     localStorage.setItem(keyDate, JSON.stringify(tasks));
 
-    
     cellDOM.lastElementChild.innerHTML = `<ul class="cell-tasks"></ul>`;
     tasksDisplay.innerHTML = `<ul class="tasks-list"></ul>`;
 
@@ -265,7 +309,7 @@ function updateDOM() {
 // event listeners
 
 // when document loads, execute renderMonth
-addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   renderMonth(getMonth(presentYear, presentMonth));
   // select cells with a date and reassign it to global variable
   cells = document.querySelectorAll(".date");
@@ -348,4 +392,22 @@ addBtn.addEventListener("click", () => {
 
 tasksDisplay.addEventListener("click", e => {
   deleteTask(e);
+});
+
+// change page content depending on the hash
+window.addEventListener("hashchange", () => {
+  console.log(window.location.hash);
+  switch (window.location.hash) {
+    case "#home":
+      routes.home()
+      break;
+    case "#about":
+      routes.about()
+      document.title = "Calendar | About";
+      break;
+      case "#contacts":
+        routes.contacts()
+        document.title = "Calendar | Contacts";
+      break;
+  }
 });
