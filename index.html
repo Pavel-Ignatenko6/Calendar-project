@@ -3,34 +3,36 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Calendar project</title>
+    <title>Calendar | Home</title>
     <link rel="stylesheet" href="style.css" />
     <script src="https://kit.fontawesome.com/bf8c76d2d2.js" crossorigin="anonymous"></script>
   </head>
 
   <body>
-    <h1>Calendar</h1>
-    <main>
-      <i class="fa-solid fa-angles-left icons"></i>
-      <div class="month-container">
-        <!-- dynamically add month DOM -->
+    <header class="navigation">
+      <a href="#home" class="single-link">Home</a>
+      <a href="#about" class="single-link">About</a>
+      <a href="#contacts" class="single-link">Contacts</a>
+    </header>
+    <div class="page-content">
+      <h1>Calendar</h1>
+      <main>
+        <i class="fa-solid fa-angles-left icons"></i>
+        <div class="month-container"></div>
+        <i class="fa-solid fa-angles-right icons"></i>
+      </main>
+      <div class="modal hidden">
+        <i class="fa-solid fa-square-xmark close-btn" style="color: #e00000"></i>
+        <div class="modal-add-task">
+          <input class="modal-task-field" type="text" name="task" placeholder=" type something" />
+          <button class="modal-add-btn">Add task</button>
+        </div>
+        <span class="modal-tasks">Tasks :</span>
+        <div class="modal-tasks-display"></div>
       </div>
-      <i class="fa-solid fa-angles-right icons"></i>
-    </main>
-
-    <div class="modal hidden">
-      <i class="fa-solid fa-square-xmark close-btn" style="color: #e00000"></i>
-      <div class="modal-add-task">
-        <input class="modal-task-field" type="text" name="task" placeholder=" type something" />
-        <button class="modal-add-btn">Add task</button>
-      </div>
-      <span class="modal-tasks">Tasks :</span>
-      <div class="modal-tasks-display">
-        <!-- dynamically add tasks -->
-      </div>
+      <div class="modal-overlay hidden"></div>
     </div>
 
-    <div class="modal-overlay hidden"></div>
 
     <div class="desc"></div>
 
